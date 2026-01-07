@@ -31,8 +31,8 @@ def render():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.dirname(os.path.dirname(script_dir))
-        # CHANGE TO trading.db FOR PRODUCTION
-        db_path = os.path.join(project_root, "storage", "trading_mockup.db")
+
+        db_path = os.path.join(project_root, "storage", "trading.db")
 
         trade_data = TradeDataAccess(db_path)
         trade_data.connect()
@@ -54,12 +54,12 @@ def render():
             st.subheader("Chart Settings")
 
             metric_options = {
-                "Total PnL ($)": "total_pnl",
+                "Total PnL (€)": "total_pnl",
                 "Average Return (%)": "avg_return_pct",
                 "Win Rate (%)": "win_rate_pct",
                 "Number of Trades": "total_trades",
                 "Closed Trades": "closed_trades",
-                "Average Position Size ($)": "avg_position_size",
+                "Average Position Size (€)": "avg_position_size",
                 "Average Duration (Hours)": "avg_duration_hours",
                 "Total Signals": "total_signals",
                 "Signal Conversion Rate (%)": "signal_conversion_rate",
@@ -107,7 +107,7 @@ def render():
                 ]
                 for _, row in top_performers.iterrows():
                     st.write(
-                        f"• {row['symbol_pair']}: ${row['total_pnl']:,.0f} "
+                        f"• {row['symbol_pair']}: €{row['total_pnl']:,.1f} "
                         f"PnL ({row['win_rate_pct']:.1f}% win rate)"
                     )
 
@@ -123,7 +123,7 @@ def render():
                 if len(poor_performers) > 0:
                     for _, row in poor_performers.iterrows():
                         st.write(
-                            f"• {row['symbol_pair']}: ${row['total_pnl']:,.0f} "
+                            f"• {row['symbol_pair']}: €{row['total_pnl']:,.1f} "
                             f"PnL ({row['win_rate_pct']:.1f}% win rate)"
                         )
                 else:
@@ -163,7 +163,7 @@ def _display_summary_metrics(data: list):
     with col1:
         st.metric(
             label="Total Portfolio PnL",
-            value=f"${total_pnl:,.0f}",
+            value=f"€{total_pnl:,.1f}",
             delta=f"{(total_pnl / 10000 * 100):+.1f}%" if total_pnl != 0 else None,
         )
 
@@ -208,7 +208,7 @@ def _display_detailed_table(data: list):
 
     display_columns = {
         "symbol_pair": "Symbol",
-        "total_pnl": "Total PnL ($)",
+        "total_pnl": "Total PnL (€)",
         "avg_return_pct": "Avg Return (%)",
         "win_rate_pct": "Win Rate (%)",
         "total_trades": "Trades",
@@ -223,7 +223,7 @@ def _display_detailed_table(data: list):
     df_display = df[list(available_columns.keys())].copy()
     df_display.columns = list(available_columns.values())
     numeric_formats = {
-        "Total PnL ($)": "{:,.0f}",
+        "Total PnL (€)": "{:,.1f}",
         "Avg Return (%)": "{:.1f}",
         "Win Rate (%)": "{:.1f}",
         "Conversion (%)": "{:.1f}",
