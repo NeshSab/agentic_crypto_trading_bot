@@ -97,8 +97,6 @@ class DataFetcher:
 
     @staticmethod
     def add_indicator_columns(df: pd.DataFrame, params: dict) -> pd.DataFrame:
-        df = df.sort_index()
-
         df["ema_fast"] = EMAIndicator(
             df["close"], window=params["fast_window"]
         ).ema_indicator()
